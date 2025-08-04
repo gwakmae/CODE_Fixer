@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace CODE_Fixer // 프로젝트 이름과 동일해야 합니다.
@@ -12,6 +13,9 @@ namespace CODE_Fixer // 프로젝트 이름과 동일해야 합니다.
     {
         // 설정 파일 이름을 상수로 정의합니다.
         private const string SETTINGS_FILE = "settings.json";
+
+        // prompts 사전 추가
+        private Dictionary<string, string> prompts = new Dictionary<string, string>();
 
         public Form1()
         {
@@ -34,16 +38,33 @@ namespace CODE_Fixer // 프로젝트 이름과 동일해야 합니다.
             {
                 if (File.Exists(SETTINGS_FILE))
                 {
-                    string jsonString = File.ReadAllText(SETTINGS_FILE, Encoding.UTF8);
-                    if (string.IsNullOrWhiteSpace(jsonString)) return;
+                    string json = File.ReadAllText(SETTINGS_FILE);
+                    var settings = JsonSerializer.Deserialize<Dictionary<string, string>>(json);
 
-                    var settings = JsonSerializer.Deserialize<Settings>(jsonString);
-                    promptText.Text = settings?.Prompt ?? "";
+                    if (settings != null)
+                    {
+                        prompts = settings;
+                    }
+                }
+                else
+                {
+                    // 기본 프롬프트 설정 (XML 추가)
+                    prompts = new Dictionary<string, string>
+                    {
+                        ["C#"] = "[기존코드]에 [수정코드]를 적용시켜서 생략없이 전체코드 출력해줘. 너가 코드를 해석해서 추가하거나 그러지 말고 문법적으로 잘 맞게 수정코드를 기존코드에 잘 적용시켜주면 된다. 이것은 C#이다. 그리고 출력 후 어디를 수정했는지도 알려줘, 코드블록으로 제공해줘",
+                        ["XML"] = "[기존코드]에 [수정코드]를 적용시켜서 생략없이 전체코드 출력해줘. 너가 코드를 해석해서 추가하거나 그러지 말고 문법적으로 잘 맞게 수정코드를 기존코드에 잘 적용시켜주면 된다. 이것은 XML이다. 그리고 출력 후 어디를 수정했는지도 알려줘, 코드블록으로 제공해줘",
+                        ["Python"] = "[기존코드]에 [수정코드]를 적용시켜서 생략없이 전체코드 출력해줘. 너가 코드를 해석해서 추가하거나 그러지 말고 문법적으로 잘 맞게 수정코드를 기존코드에 잘 적용시켜주면 된다. 이것은 Python이다. 그리고 출력 후 어디를 수정했는지도 알려줘, 코드블록으로 제공해줘",
+                        ["CSS"] = "[기존코드]에 [수정코드]를 적용시켜서 생략없이 전체코드 출력해줘. 너가 코드를 해석해서 추가하거나 그러지 말고 문법적으로 잘 맞게 수정코드를 기존코드에 잘 적용시켜주면 된다. 이것은 CSS이다. 그리고 출력 후 어디를 수정했는지도 알려줘, 코드블록으로 제공해줘",
+                        ["HTML5"] = "[기존코드]에 [수정코드]를 적용시켜서 생략없이 전체코드 출력해줘. 너가 코드를 해석해서 추가하거나 그러지 말고 문법적으로 잘 맞게 수정코드를 기존코드에 잘 적용시켜주면 된다. 이것은 HTML5이다. 그리고 출력 후 어디를 수정했는지도 알려줘, 코드블록으로 제공해줘",
+                        ["JavaScript"] = "[기존코드]에 [수정코드]를 적용시켜서 생략없이 전체코드 출력해줘. 너가 코드를 해석해서 추가하거나 그러지 말고 문법적으로 잘 맞게 수정코드를 기존코드에 잘 적용시켜주면 된다. 이것은 JavaScript이다. 그리고 출력 후 어디를 수정했는지도 알려줘, 코드블록으로 제공해줘",
+                        ["MQL5"] = "[기존코드]에 [수정코드]를 적용시켜서 생략없이 전체코드 출력해줘. 너가 코드를 해석해서 추가하거나 그러지 말고 문법적으로 잘 맞게 수정코드를 기존코드에 잘 적용시켜주면 된다. 이것은 MQL5이다. 그리고 출력 후 어디를 수정했는지도 알려줘, 코드블록으로 제공해줘"
+                    };
+                    SaveSettings();
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"설정 파일 로딩 오류: {ex.Message}", "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"설정을 불러오는 중 오류가 발생했습니다: {ex.Message}", "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -54,16 +75,12 @@ namespace CODE_Fixer // 프로젝트 이름과 동일해야 합니다.
         {
             try
             {
-                var settings = new Settings
-                {
-                    Prompt = promptText.Text
-                };
                 var options = new JsonSerializerOptions
                 {
                     WriteIndented = true,
                     Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
                 };
-                string jsonString = JsonSerializer.Serialize(settings, options);
+                string jsonString = JsonSerializer.Serialize(prompts, options);
                 File.WriteAllText(SETTINGS_FILE, jsonString, Encoding.UTF8);
             }
             catch (Exception ex)
@@ -73,7 +90,7 @@ namespace CODE_Fixer // 프로젝트 이름과 동일해야 합니다.
         }
 
         // '클립보드에 복사' 버튼을 클릭했을 때 실행되는 메서드입니다.
-        private void copyButton_Click(object sender, EventArgs e)
+        private void btnCopyToClipboard_Click(object sender, EventArgs e)
         {
             string originalCode = originalCodeText.Text;
             string modifiedCode = modifiedCodeText.Text;
@@ -113,7 +130,7 @@ namespace CODE_Fixer // 프로젝트 이름과 동일해야 합니다.
         /// <summary>
         /// '지우기' 버튼 클릭 시 기존 및 수정 코드 내용을 삭제합니다.
         /// </summary>
-        private void clearButton_Click(object sender, EventArgs e)
+        private void btnClear_Click(object sender, EventArgs e)
         {
             originalCodeText.Clear();
             modifiedCodeText.Clear();
@@ -148,6 +165,23 @@ namespace CODE_Fixer // 프로젝트 이름과 동일해야 합니다.
                     promptText.Text = $"[기존코드]에 [수정코드]를 적용시켜서 생략없이 전체코드 출력해줘. 너가 코드를 해석해서 추가하거나 그러지 말고 문법적으로 잘 맞게 수정코드를 기존코드에 잘 적용시켜주면 된다. 이것은 {language}이다. 그리고 출력 후 어디를 수정했는지도 알려줘, 코드블록으로 제공해줘";
                 }
             }
+        }
+
+        // [수정코드] : XML 버튼 이벤트 핸들러 추가
+        private void btnXML_Click(object sender, EventArgs e)
+        {
+            string xmlPrompt = "[기존코드]에 [수정코드]를 적용시켜서 생략없이 전체코드 출력해줘. " +
+                              "너가 코드를 해석해서 추가하거나 그러지 말고 문법적으로 잘 맞게 수정코드를 " +
+                              "기존코드에 잘 적용시켜주면 된다. 이것은 XML이다. " +
+                              "그리고 출력 후 어디를 수정했는지도 알려줘, 코드블록으로 제공해줘";
+
+            UpdatePromptText(xmlPrompt);
+        }
+
+        // [수정코드] : UpdatePromptText 메서드가 필요하다면 아래와 같이 정의
+        private void UpdatePromptText(string text)
+        {
+            promptText.Text = text;
         }
     }
 }
