@@ -37,14 +37,15 @@
             this.promptText = new TextBox();
             this.languageButtonsPanel = new FlowLayoutPanel();
             this.csharpButton = new Button();
+            this.xmlButton = new Button();
             this.pythonButton = new Button();
             this.cssButton = new Button();
             this.html5Button = new Button();
             this.jsButton = new Button();
+            this.razorButton = new Button();
             this.mql4Button = new Button();
             this.mqhButton = new Button();
             this.mq5Button = new Button();
-            this.xmlButton = new Button();
             this.btnCopyToClipboard = new Button();
             this.btnClear = new Button();
             this.alwaysOnTopCheckBox = new CheckBox();
@@ -108,6 +109,16 @@
             this.promptLabel.TabIndex = 4;
             this.promptLabel.Text = "프롬프트 (클립보드 최상단에 포함될 내용):";
             // 
+            // promptText
+            // 
+            this.promptText.Location = new Point(10, 570);
+            this.promptText.Margin = new Padding(3, 4, 3, 4);
+            this.promptText.Multiline = true;
+            this.promptText.Name = "promptText";
+            this.promptText.ScrollBars = ScrollBars.Vertical;
+            this.promptText.Size = new Size(564, 120);
+            this.promptText.TabIndex = 5;
+            // 
             // languageButtonsPanel
             // 
             this.languageButtonsPanel.AutoSize = true;
@@ -117,6 +128,7 @@
             this.languageButtonsPanel.Controls.Add(this.cssButton);
             this.languageButtonsPanel.Controls.Add(this.html5Button);
             this.languageButtonsPanel.Controls.Add(this.jsButton);
+            this.languageButtonsPanel.Controls.Add(this.razorButton);
             this.languageButtonsPanel.Controls.Add(this.mql4Button);
             this.languageButtonsPanel.Controls.Add(this.mqhButton);
             this.languageButtonsPanel.Controls.Add(this.mq5Button);
@@ -193,9 +205,20 @@
             this.jsButton.UseVisualStyleBackColor = true;
             this.jsButton.Click += this.languageButton_Click;
             // 
+            // razorButton
+            // 
+            this.razorButton.Location = new Point(3, 39);
+            this.razorButton.Name = "razorButton";
+            this.razorButton.Size = new Size(75, 30);
+            this.razorButton.TabIndex = 9;
+            this.razorButton.Tag = "Razor";
+            this.razorButton.Text = "Razor";
+            this.razorButton.UseVisualStyleBackColor = true;
+            this.razorButton.Click += this.languageButton_Click;
+            // 
             // mql4Button
             // 
-            this.mql4Button.Location = new Point(489, 3);
+            this.mql4Button.Location = new Point(84, 39);
             this.mql4Button.Name = "mql4Button";
             this.mql4Button.Size = new Size(75, 30);
             this.mql4Button.TabIndex = 5;
@@ -206,7 +229,7 @@
             // 
             // mqhButton
             // 
-            this.mqhButton.Location = new Point(3, 39);
+            this.mqhButton.Location = new Point(165, 39);
             this.mqhButton.Name = "mqhButton";
             this.mqhButton.Size = new Size(75, 30);
             this.mqhButton.TabIndex = 7;
@@ -217,7 +240,7 @@
             // 
             // mq5Button
             // 
-            this.mq5Button.Location = new Point(84, 39);
+            this.mq5Button.Location = new Point(246, 39);
             this.mq5Button.Name = "mq5Button";
             this.mq5Button.Size = new Size(75, 30);
             this.mq5Button.TabIndex = 8;
@@ -225,16 +248,6 @@
             this.mq5Button.Text = "MQ5";
             this.mq5Button.UseVisualStyleBackColor = true;
             this.mq5Button.Click += this.languageButton_Click;
-            // 
-            // promptText
-            // 
-            this.promptText.Location = new Point(10, 570);
-            this.promptText.Margin = new Padding(3, 4, 3, 4);
-            this.promptText.Multiline = true;
-            this.promptText.Name = "promptText";
-            this.promptText.ScrollBars = ScrollBars.Vertical;
-            this.promptText.Size = new Size(564, 120);
-            this.promptText.TabIndex = 5;
             // 
             // btnCopyToClipboard
             // 
@@ -261,7 +274,7 @@
             this.alwaysOnTopCheckBox.AutoSize = true;
             this.alwaysOnTopCheckBox.Location = new Point(438, 716);
             this.alwaysOnTopCheckBox.Name = "alwaysOnTopCheckBox";
-            this.alwaysOnTopCheckBox.Size = new Size(90, 19);
+            this.alwaysOnTopCheckBox.Size = new Size(78, 19);
             this.alwaysOnTopCheckBox.TabIndex = 11;
             this.alwaysOnTopCheckBox.Text = "항상 위에";
             this.alwaysOnTopCheckBox.UseVisualStyleBackColor = true;
@@ -291,7 +304,6 @@
             this.FormClosing += this.Form1_FormClosing;
             this.Load += this.Form1_Load;
             this.languageButtonsPanel.ResumeLayout(false);
-            this.languageButtonsPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -315,6 +327,7 @@
         private Button mqhButton;
         private Button mq5Button;
         private Button xmlButton;
+        private Button razorButton; // [수정코드] Razor 버튼 변수 선언
         private Button btnCopyToClipboard;
         private Button btnClear;
         private CheckBox alwaysOnTopCheckBox;
